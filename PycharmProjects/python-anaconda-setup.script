@@ -1,0 +1,34 @@
+profile_file=~/.bash_profile
+
+setup_anaconda() 
+{
+ echo "# added by Anaconda3 2018.12 installer" >> $profile_file
+ echo "# >>> conda init >>>" >> $profile_file
+ echo "# !! Contents within this block are managed by 'conda init' !!" >> $profile_file
+ echo "__conda_setup=\"\$(CONDA_REPORT_ERRORS=false '/opt/anaconda3/bin/conda' shell.bash hook 2> /dev/null)\"" >> $profile_file
+ echo "if [ \$? -eq 0 ]; then" >> $profile_file
+ echo "    \eval \"\$__conda_setup\"" >> $profile_file
+ echo "else" >> $profile_file
+ echo "    if [ -f \"/opt/anaconda3/etc/profile.d/conda.sh\" ]; then" >> $profile_file
+ echo "        . \"/opt/anaconda3/etc/profile.d/conda.sh\"" >> $profile_file
+ echo "        CONDA_CHANGEPS1=false conda activate base" >> $profile_file
+ echo "    else" >> $profile_file
+ echo "        \export PATH=\"/opt/anaconda3/bin:\$PATH\"" >> $profile_file
+ echo "    fi" >> $profile_file
+ echo "fi" >> $profile_file
+ echo "unset __conda_setup" >> $profile_file
+ echo "# <<< conda init <<<" >> $profile_file
+
+
+}
+
+grep -q -F 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/anaconda3/lib' $profile_file || echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/anaconda3/lib' >> $profile_file
+grep -q -F '# >>> conda init >>>' $profile_file || setup_anaconda
+echo "Updated the PATH for the anaconda environment."
+mkdir -p ~/.matplotlib
+touch ~/.matplotlib/matplotlibrc
+grep -q -F 'backend: Qt5Agg' ~/.matplotlib/matplotlibrc || echo 'backend: Qt5Agg' >> ~/.matplotlib/matplotlibrc
+echo "Configured matplotlib for Qt5Agg backend."
+echo "The environment is ready for COSC343."
+source $profile_file
+
